@@ -6,6 +6,7 @@ find_package(CLI11 REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(tl-expected REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -145,9 +146,10 @@ endif()
 target_link_libraries(libpowerloader
                     INTERFACE
                         tl::expected
+                        nlohmann_json::nlohmann_json
+                        ${SPDLOG_TARGET}
                     PRIVATE
                         ${CURL_LIBRARIES}
-                        ${SPDLOG_TARGET}
                         ${ZCK_LIBRARY}
                         ${OPENSSL_LIBRARIES}
                     )
