@@ -119,7 +119,6 @@ target_include_directories(powerloader PUBLIC
     ${ZCK_INCLUDE_DIRS}
 )
 target_link_libraries(powerloader libpowerloader CLI11::CLI11 yaml-cpp)
-set_target_properties(powerloader PROPERTIES PUBLIC_HEADER "${LIBPOWERLOADER_HEADERS}")
 
 if (DEV)
     add_executable(dpowerloader src/main.cpp)
@@ -136,6 +135,23 @@ if (WITH_ZCHUNK)
         target_compile_definitions(libpowerloader PUBLIC /wd4996)
     endif()
 endif()
+
+find_package(spdlog REQUIRED)
+if (MSVC)
+    set(SPDLOG_TARGET spdlog::spdlog_header_only)
+else()
+    set(SPDLOG_TARGET spdlog::spdlog)
+endif()
+target_link_libraries(libpowerloader
+                    INTERFACE
+                        tl::expected
+                    PRIVATE
+                        ${CURL_LIBRARIES}
+                        ${SPDLOG_TARGET}
+                        ${ZCK_LIBRARY}
+                        ${OPENSSL_LIBRARIES}
+                    )
+target_link_libraries(powerloader libpowerloader CLI11::CLI11 yaml-cpp)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
